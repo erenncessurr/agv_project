@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <gazebo>
+        <plugin name="gz::sim::systems::DiffDrive" filename="gz-sim-diff-drive-system">
+
+            <!-- Wheel Information -->
+            <left_joint>steering_cylinder_joint</left_joint>
+            <right_joint>front_wheel_joint</right_joint>
+            <wheel_separation>0.4</wheel_separation>
+            <wheel_radius>0.07</wheel_radius>
+
+
+            <!-- Limits -->
+            <max_linear_acceleration>0.33</max_linear_acceleration>
+
+            <topic>/cmd_vel</topic>
+
+            <!-- Output -->
+
+             <frame_id>/odom</frame_id>
+             <child_frame_id>/base_link</child_frame_id>
+             <odom_topic>/odom</odom_topic>
+             <odom_publisher_frequency>1000</odom_publisher_frequency>
+             <tf_topic>/tf</tf_topic>
+
+        </plugin>
+
+         <plugin filename="gz-sim-joint-state-publisher-system"
+             name="gz::sim::systems::JointStatePublisher">
+             <topic>joint_states</topic>
+             <joint_name>fork_left_wheel_joint</joint_name>
+             <joint_name>fork_right_wheel_joint</joint_name>
+             <joint_name>front_wheel_joint</joint_name>
+             <joint_name>steering_cylinder_joint</joint_name>
+         </plugin>
+
+                 <!-- Moving Forward-->
+        <plugin filename="gz-sim-triggered-publisher-system.so"
+                name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+                <match field="data">16777235</match>
+            </input>
+            <output type="gz.msgs.Twist" topic="/cmd_vel">
+                linear: {x: 0.5}, angular: {z: 0.0}
+            </output>
+        </plugin>
+
+        <!-- Moving Backward-->
+        <plugin filename="gz-sim-triggered-publisher-system.so"
+                name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+                <match field="data">16777237</match>
+            </input>
+            <output type="gz.msgs.Twist" topic="/cmd_vel">
+                linear: {x: -0.5}, angular: {z: 0.0}
+            </output>
+        </plugin>
+
+        <!-- Rotating right-->
+        <plugin filename="gz-sim-triggered-publisher-system.so"
+                name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+                <match field="data">16777236</match>
+            </input>
+            <output type="gz.msgs.Twist" topic="/cmd_vel">
+                linear: {x: 0.0}, angular: {z: -0.5}
+            </output>
+        </plugin>
+
+        <!--Rotating left-->
+        <plugin filename="gz-sim-triggered-publisher-system.so"
+                name="gz::sim::systems::TriggeredPublisher">
+            <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+                <match field="data">16777234</match>
+            </input>
+            <output type="gz.msgs.Twist" topic="/cmd_vel">
+                linear: {x: 0.0}, angular: {z: 0.5}
+            </output>
+        </plugin>
+    </gazebo>
+
+
+</robot>

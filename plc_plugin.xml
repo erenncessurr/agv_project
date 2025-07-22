@@ -1,0 +1,9 @@
+<library path="plc_system">
+  <class name="agv_project/PlcSystemHardware"
+         type="agv_project::PlcSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for custom AGV using PLC
+    </description>
+  </class>
+</library>
